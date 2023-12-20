@@ -113,7 +113,7 @@ class ImportImages:
 			cursor.execute(f"SELECT id FROM images WHERE md5_hash='{md5_hash}';")
 			image_id = cursor.fetchall()[0][0]
 			for keyword in keywords:
-				insert_query =  ("INSERT INTO keywords (keyword, image_id) VALUES (")
+				insert_query =  ("INSERT INTO keywords (image_id, keyword) VALUES (")
 				insert_query += (f"{image_id}, '{keyword}');")
 				cursor.execute(insert_query)
 				connection.commit()
