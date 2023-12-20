@@ -1,7 +1,21 @@
 # ColouringPagesPrinter
 An interface to enable rapid printing of kids colouring pages. 
 
-## Quick setup
+## Setup
+The setup requires a number of steps (typically) on a clean system. 
+
+### Install SQLite3 database
+```bash
+sudo apt-get install sqlite3
+```
+
+### Create database tables
+```bash
+cd app
+sqlite3 colouring_pages.db < database_setup.sql
+cd ..
+```
+
 
 ```bash
 pip install -r requirements.txt
@@ -9,6 +23,14 @@ sqlite3 colouring_pages.db < database_setup.sql
 python -m run
 ```
 
+### CUPS library install issues
+If you're installing the various packages on a Linux/Raspberry Pi system and you 
+get some error relating to the ```pycups``` library, try installing the following dev 
+package. 
+
+```bash
+sudo apt-get install libcups2-dev
+```
 
 
 ## SQlite Database setup
