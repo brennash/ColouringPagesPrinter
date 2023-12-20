@@ -4,7 +4,7 @@ from app import app
 from .thumbnail import Thumbnail
 from .database import Database
 from flask import render_template
-from flask import Flask, request, Response
+from flask import Flask, request, Response, jsonify
 
 
 database = Database()
@@ -21,8 +21,26 @@ def print_image():
     image_path = request.args.get('image_path')
     return render_template('print_image.html', image_path=image_path)
 
+@app.route('/search', methods=['GET','POST'])
+def search_image():
+    if request.method == 'POST':
+      # Log the requestor details to file
+      search_text = request.form.get('search_text')
+      thumbnail_list = database.search_keywords(search_text.strip().lower())
+      return render_template('index.html', thumbnail_list=thumbnail_list)
+    else:
+      return redirect(url_for('index'))
+
 @app.route('/autocomplete', methods=['GET'])
 def autocomplete():
-  search = request.args.get('q')
-  results = ['page1','page2']
-  return jsonify(matching_results=results)
+    print("AUTOCOMPLETE!!")
+    search = request.args.get('q')
+
+    if not search:
+        # If no query is provided, return an empty list
+        return jsonify([])
+
+    print(search)
+    results = database.get_autocomplete(search)
+    print("RESULTS", results)
+    return results

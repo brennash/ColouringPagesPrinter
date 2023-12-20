@@ -28,27 +28,9 @@
         box-shadow: 0 1px 0 0 #27AAE1 !important
       }
     </style>
-
-    <script type="text/javascript">
-      $(function() {
-        $("#autocomplete").autocomplete({
-          source:function(request, response) {
-              $.getJSON("{{url_for('autocomplete')}}",{
-                  q: request.term, // in flask, "q" will be the argument to look for using request.args
-              }, function(data) {
-                  response(data.matching_results); // matching_results from jsonify
-              });
-          },
-          minLength: 2,
-          select: function(event, ui) {
-              console.log(ui.item.value); // not in your question, but might help later
-          }
-        });
-      })
-    </script>
   </head>
 
-  <body>
+  <body>    
     <div class="container">
       <div class="row" align="middle">
         &nbsp;<br>
@@ -75,7 +57,7 @@
 
         <form class="col s10" action="/search" method="post" enctype="multipart/form-data" name="search_form" id="search_form">
           <div class="input-field col s6 offset-s3">
-            <input id="search_text" name="search_text" type="text" class="validate">
+            <input id="search_text" name="search_text" type="text" class="autocomplete">
             <label for="search_text">Image to Find</label>
           </div>
 
@@ -87,7 +69,6 @@
 
         </div>
       </div>
-
 
       <hr><br>
 
@@ -107,6 +88,38 @@
                 {% endfor %}
         </tbody> 
       </table>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Materialize Autocomplete
+            var elems = document.querySelector('.autocomplete');
+            var instance = M.Autocomplete.init(elems, {
+                data: {},  // Initialize with an empty object
+                limit: 5,   // Limit the number of suggestions
+                onAutocomplete: function(text) {
+                    // Callback function when an option is selected
+                    console.log("Autocomplete selected:", text);
+                }
+            });
+
+            // Add an event listener to the input field for user input
+            document.getElementById('autocomplete-input').addEventListener('input', function() {
+                // Fetch autocomplete data from Flask route
+                var query = this.value;
+                fetch('/autocomplete?query=' + query)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Update Materialize Autocomplete data
+                        var autocompleteData = {};
+                        data.forEach(item => {
+                            autocompleteData[item[0]] = null;
+                        });
+                        instance.updateData(autocompleteData);
+                    });
+            });
+        });
+    </script>
 
 </body>
 
