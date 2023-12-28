@@ -32,6 +32,14 @@
 
   <body>    
     <div class="container">
+
+      <!-- Floating Green "Upload" Button --->
+      <div class="fixed-action-btn" data-position="left" data-tooltip="Upload Image">
+        <a href="{{ url_for('upload_image') }}" class="btn-floating btn-large green">
+          <i class="large material-icons">upload</i>
+        </a>
+      </div>
+
       <div class="row" align="middle">
         &nbsp;<br>
         &nbsp;<br>
@@ -61,14 +69,14 @@
             <label for="search_text">Image to Find</label>
           </div>
 
-          <div class="input-field col s2">
-            <button class="btn blue waves-effect waves-light" type="submit" name="action">Search
-              <i class="material-icons right">send</i>
+          <div class="input-field col s1">
+            <button class="btn blue waves-effect waves-light" type="submit" name="action">
+              <i class="material-icons middle">search</i>
             </button>
           </div>
-
-        </div>
+        </form>
       </div>
+    </div>
 
       <hr><br>
 
@@ -90,6 +98,8 @@
       </table>
 
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize Materialize Autocomplete
@@ -104,7 +114,7 @@
             });
 
             // Add an event listener to the input field for user input
-            document.getElementById('autocomplete-input').addEventListener('input', function() {
+            document.getElementById('search_text').addEventListener('input', function() {
                 // Fetch autocomplete data from Flask route
                 var query = this.value;
                 fetch('/autocomplete?query=' + query)
