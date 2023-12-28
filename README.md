@@ -23,6 +23,17 @@ sqlite3 colouring_pages.db < database_setup.sql
 python -m run
 ```
 
+### Setting up your SSH config
+Sometimes, on multi-user systems, you might not be able to push changes to the GitHub repo. If
+you get these permissions errors you might want to start your local ssh client, and add the ssh 
+key to it, e.g., 
+
+```
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_rsa
+```
+
+
 ### Find Raspberry Pi on the network
 The MAC address of all Raspberry Pi's should be the same, so you can find them on your intranet as follows, 
 
