@@ -23,6 +23,15 @@ sqlite3 colouring_pages.db < database_setup.sql
 python -m run
 ```
 
+### Find Raspberry Pi on the network
+The MAC address of all Raspberry Pi's should be the same, so you can find them on your intranet as follows, 
+
+```
+arp -na | grep -i b8:27:eb
+```
+
+
+
 ### CUPS library install issues
 If you're installing the various packages on a Linux/Raspberry Pi system and you 
 get some error relating to the ```pycups``` library, try installing the following dev 

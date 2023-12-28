@@ -11,8 +11,6 @@ class Database:
         self.thumbnails = []
         self.database_path = 'app/colouring_pages.db'
 
-
-
     def get_thumbnail_list(self):
         connection = None
         insert_query = None
@@ -49,7 +47,7 @@ class Database:
         all_keywords = search_text.lower().replace(",", " ").replace(".", " ").split()
         filtered_keywords = [s for s in all_keywords if not s.isdigit()]
 
-        query =  "SELECT images.md5_hash, images.file_path, images.thumbnail_path FROM images INNER JOIN keywords "
+        query =  "SELECT images.md5_hash as md5_hash, images.file_path as file_path, images.thumbnail_path as thumbnail_path FROM images INNER JOIN keywords "
         query += "ON images.id = keywords.image_id WHERE " 
 
         for index, keyword in enumerate(filtered_keywords):
@@ -66,6 +64,7 @@ class Database:
             cursor = connection.cursor()
             cursor.execute(query)
             result_set = cursor.fetchall()
+            print(f"DATABASE FOUND {len(result_set)} results for query {keyword}")
             for row in result_set:
                 print(row)
                 thumbnail = Thumbnail(row[0])
@@ -83,22 +82,30 @@ class Database:
 
 
 
-    def get_autocomplete(self, search_text):
+    def get_autocomplete(self, autocomplete_text):
         """
-        Returns a list of keywords matching the search_text 
+        Returns a list of thumbnails matching the autocomplete_text 
 
         Parameters:
-        - search_text: A space-delimited search string. 
+        - autocomplete_text: A number of characters representing a search string. 
         """
+        query =  "SELECT "
+        query += "keyword "
+        query += "FROM keywords "
+        query += f"WHERE keywords.keyword LIKE '{autocomplete_text}%' " 
+        query += "GROUP BY 1 ORDER BY RANDOM() LIMIT 1;"
+
+        connection = None
+        auto_complete = []
         try:
             connection = sqlite3.connect(self.database_path)
             cursor = connection.cursor()
-            cursor.execute("SELECT keyword FROM keywords WHERE keyword LIKE ? LIMIT 5", ('%' + search_text + '%',))
-            results = cursor.fetchall()
-            jsonify(results)
+            cursor.execute(query)
+            result_set = cursor.fetchall()
+            return jsonify(result_set[0][0])
         except sqlite3.Error as e:
-            print(f"Database Error: {e}")
-            return keyword_list
+            print(f"Database Error: {e}, {query}")
+            return ''
         finally:
             # Close the connection
             if connection:
