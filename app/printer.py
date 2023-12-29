@@ -1,47 +1,47 @@
+from PIL import Image
+import random
 import cups
+import os
 
-def print_image(image_path, printer_name):
-    """
-    Print an image to a specified printer.
+class Printer:
 
-    Parameters:
-    - image_path: The path to the image file.
-    - printer_name: The name of the printer.
+	def __init__(self, verbose_flag=False):
+		self.verbose = verbose_flag
 
-    Example:
-    print_image("path/to/your/image.jpg", "Your_Printer_Name")
-    """
-    conn = cups.Connection()
-    
-    # Get the printer information
-    printers = conn.getPrinters()
-    
-    # Check if the specified printer exists
-    if printer_name not in printers:
-        print(f"Error: Printer '{printer_name}' not found.")
-        return
-    
-    # Get the default printer options
-    printer_options = conn.getPrinterAttributes(printer_name)
+	def print_image(self, image_path):
+		try:
+			conn = cups.Connection()
+			image_path_bytes = image_path.encode('utf-8')
+			printers = conn.getPrinters()
+			if not printers:
+				if self.verbose:
+					print(f"No printers found!!")
+				return "No printers found"
 
-    # Set print options (you may need to adjust these based on your printer)
-    options = {
-        'media': printer_options['media-default'],
-        'fit-to-page': True,
-    }
+			printer_name = list(printers.keys())[0]
+			printer_name_bytes = printer_name.encode('utf-8')
+			print_options = {'copies': 1, 'media': 'A4'}
 
-    # Print the image
-    job_id = conn.printFile(
-        printer_name, 
-        image_path, 
-        "Print Job", 
-        options
-    )
+			if self.verbose:
+				print(f"Connecting to printer: {printer_name}")
 
-    print(f"Print job sent successfully. Job ID: {job_id}")
+			random_job_id = self.get_random_id()
+			job_title = (f'Image_Print_Job_{random_job_id}')
+			job_title_bytes = job_title.encode('utf-8')
+			job_id = conn.createJob(printer_name, job_title, {})
+			job_id_bytes = str(job_id).encode('utf-8')
 
-# Example usage
-image_path = "path/to/your/image.jpg"
-printer_name = "Your_Printer_Name"
+			with open(image_path, 'rb') as image_file:
+				conn.printFile(printer_name_bytes, image_path_bytes, job_id_bytes, options={})
+			conn.closeJob(job_id)
+			return "Printing..."
+		except Exception as err:
+			return str(err)
 
-print_image(image_path, printer_name)
+
+	def get_random_id(self):
+		min = 0
+		max = 999
+		digits = [str(random.randint(min, max)) for i in range(5)]
+		digits = [(len(str(max))-len(digit))*'0'+digit for digit in digits]
+		return digits
