@@ -18,7 +18,6 @@
         font-weight: bold;
       } 
 
-
       .input-field input:focus + label {
         color: #27AAE1 !important;
       }
@@ -35,7 +34,7 @@
 
       <!-- Floating Red Print Button --->
       <div class="fixed-action-btn" data-position="left" data-tooltip="Upload Image">
-        <a href="{{ url_for('print_image') }}" class="btn-floating btn-large green">
+        <a href="{{ url_for('printer', image_path=thumbnail.get_file_path()) }}" class="btn-floating btn-large green">
           <i class="large material-icons">print</i>
         </a>
       </div>
@@ -50,7 +49,9 @@
       <!--- The top header row --->
       <div class="row" align="middle">
         <div class="col s8 offset-s2" align="center">
-          <img src="{{ url_for('static', filename='img/logo.png') }}" height="75" align="middle">
+          <a href="{{ url_for('index') }}">
+            <img src="{{ url_for('static', filename='img/logo.png') }}" height="75" align="middle">
+          </a>
           &nbsp;&nbsp;&nbsp;
           <b>Caoimhe's Colouring Pages</b>
         </div>
@@ -80,7 +81,7 @@
 
     <hr><br>
     <div class="row" align="middle">
-      <img src="{{ image_path }}" height="800" align="middle" class="class="responsive-img p-4">
+      <img src="{{ thumbnail.get_image_path() }}" align="middle" class="class="responsive-img p-4">
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
