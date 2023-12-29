@@ -3,12 +3,13 @@ import sqlite3
 from app import app
 from .thumbnail import Thumbnail
 from .database import Database
+from .printer import Printer
 from flask import render_template
 from flask import Flask, request, Response, jsonify
 
 
 database = Database()
-
+printer = Printer()
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 
@@ -32,15 +33,11 @@ def upload_image():
 def upload_file():
     if 'file' not in request.files:
         return redirect(request.url)
-    
     file = request.files['file']
-    
     if file.filename == '':
         return redirect(request.url)
-    
     if file and allowed_file(file.filename):
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
-    
     return redirect(url_for('index'))
 
 @app.route('/search', methods=['GET','POST'])

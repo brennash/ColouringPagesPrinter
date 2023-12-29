@@ -30,8 +30,16 @@
     </style>
   </head>
 
-  <body>
+  <body>    
     <div class="container">
+
+      <!-- Floating Red Print Button --->
+      <div class="fixed-action-btn" data-position="left" data-tooltip="Upload Image">
+        <a href="{{ url_for('print_image') }}" class="btn-floating btn-large green">
+          <i class="large material-icons">print</i>
+        </a>
+      </div>
+
       <div class="row" align="middle">
         &nbsp;<br>
         &nbsp;<br>
@@ -57,33 +65,56 @@
 
         <form class="col s10" action="/search" method="post" enctype="multipart/form-data" name="search_form" id="search_form">
           <div class="input-field col s6 offset-s3">
-            <input id="search_text" name="search_text" type="text" class="validate">
+            <input id="search_text" name="search_text" type="text" class="autocomplete">
             <label for="search_text">Image to Find</label>
           </div>
 
-          <div class="input-field col s2">
-            <button class="btn blue waves-effect waves-light" type="submit" name="action">Search
-              <i class="material-icons right">send</i>
+          <div class="input-field col s1">
+            <button class="btn blue waves-effect waves-light" type="submit" name="action">
+              <i class="material-icons middle">search</i>
             </button>
           </div>
         </form>
-      </div>
-
-
-      <div class="row" align="right">
-        <form class="col s12" action="/search" method="post" enctype="multipart/form-data" name="search_form" id="search_form">
-          <div class="input-field col s12">
-            <button class="btn green waves-effect waves-light" type="submit" name="action">Print
-              <i class="material-icons right">print</i>
-            </button>
-          </div>
-        </form>
-      </div>
-
-      <hr><br>
-      <div class="row" align="middle">
-        <img src="{{ image_path }}" height="800" align="middle" class="class="responsive-img p-4">
       </div>
     </div>
-  </body>
+
+    <hr><br>
+    <div class="row" align="middle">
+      <img src="{{ image_path }}" height="800" align="middle" class="class="responsive-img p-4">
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Materialize Autocomplete
+            var elems = document.querySelector('.autocomplete');
+            var instance = M.Autocomplete.init(elems, {
+                data: {},  // Initialize with an empty object
+                limit: 5,   // Limit the number of suggestions
+                onAutocomplete: function(text) {
+                    // Callback function when an option is selected
+                    console.log("Autocomplete selected:", text);
+                }
+            });
+
+            // Add an event listener to the input field for user input
+            document.getElementById('search_text').addEventListener('input', function() {
+                // Fetch autocomplete data from Flask route
+                var query = this.value;
+                fetch('/autocomplete?query=' + query)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Update Materialize Autocomplete data
+                        var autocompleteData = {};
+                        data.forEach(item => {
+                            autocompleteData[item[0]] = null;
+                        });
+                        instance.updateData(autocompleteData);
+                    });
+            });
+        });
+    </script>
+
+</body>
 </html>
