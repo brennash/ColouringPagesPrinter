@@ -17,13 +17,19 @@ app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 @app.route('/index')
 def index():
     thumbnail_list = database.get_thumbnail_list()
-    print(len(thumbnail_list))
     return render_template('index.html', thumbnail_list=thumbnail_list)
 
 @app.route('/print_image')
 def print_image():
     image_path = request.args.get('image_path')
     return render_template('print_image.html', image_path=image_path)
+
+@app.route('/printer')
+def printer():
+    image_path = request.args.get('image_path')
+    job_id = printer.print_image(image_path)
+    print(f"Printing Job Id: {job_id}:")
+    return redirect(url_for('index'))
 
 @app.route('/upload_image')
 def upload_image():

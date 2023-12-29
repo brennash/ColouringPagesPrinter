@@ -12,7 +12,7 @@ class ImportImages:
 
 	def __init__(self, updateFlag=False):
 		self.update = updateFlag
-		self.thumbnail_height = 200
+		self.thumbnail_height = 400
 		self.image_height = 850
 
 		if self.update == False:
