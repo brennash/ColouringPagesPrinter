@@ -5,11 +5,10 @@ from .thumbnail import Thumbnail
 from .database import Database
 from .printer import Printer
 from flask import render_template
+from flask import redirect, url_for
 from flask import Flask, request, Response, jsonify
 
-
 database = Database()
-printer = Printer()
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 
@@ -21,12 +20,14 @@ def index():
 
 @app.route('/print_image')
 def print_image():
-    image_path = request.args.get('image_path')
-    return render_template('print_image.html', image_path=image_path)
+    image_hash = request.args.get('img_hash')
+    thumbnail = database.get_thumbnail(image_hash)
+    return render_template('print_image.html', thumbnail=thumbnail)
 
 @app.route('/printer')
 def printer():
     image_path = request.args.get('image_path')
+    printer = Printer()
     job_id = printer.print_image(image_path)
     print(f"Printing Job Id: {job_id}:")
     return redirect(url_for('index'))

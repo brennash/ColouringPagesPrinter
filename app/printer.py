@@ -31,13 +31,19 @@ class Printer:
 			job_id = conn.createJob(printer_name, job_title, {})
 			job_id_bytes = str(job_id).encode('utf-8')
 
-			with open(image_path, 'rb') as image_file:
-				conn.printFile(printer_name_bytes, image_path_bytes, job_id_bytes, options={})
+			abs_path = str(os.getcwd()) + '/app/' + image_path
+			abs_path_bytes = abs_path.encode('utf-8')
+
+			if not os.path.isfile(abs_path):
+				print(f"ERROR - {os.getcwd()}")
+				print(f"ERROR - cannot find file to print {abs_path}")
+
+			with open(abs_path, 'rb') as image_file:
+				conn.printFile(printer_name_bytes, abs_path_bytes, job_id_bytes, options={})
 			conn.closeJob(job_id)
 			return "Printing..."
 		except Exception as err:
 			return str(err)
-
 
 	def get_random_id(self):
 		min = 0

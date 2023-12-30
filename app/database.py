@@ -36,6 +36,31 @@ class Database:
                 connection.close()
 
 
+    def get_thumbnail(self, image_hash):
+        connection = None
+        search_query =  "SELECT md5_hash, file_path, thumbnail_path "
+        search_query += "FROM images WHERE "
+        search_query += (f"md5_hash='{image_hash}' LIMIT 1;")
+
+        try:
+            connection = sqlite3.connect(self.database_path)
+            cursor = connection.cursor()
+            cursor.execute(search_query)
+            result_set = cursor.fetchall()
+            for row in result_set:
+                print(row)
+                thumbnail = Thumbnail(row[0])
+                thumbnail.set_file_path(row[1])
+                thumbnail.set_thumbnail_path(row[2])
+                return thumbnail
+        except sqlite3.Error as e:
+            print(f"Thumbnail Hash Database Error: {e}, {search_query}")
+            return None
+        finally:
+            # Close the connection
+            if connection:
+                connection.close()
+
     def search_keywords(self, search_text):
         """
         Returns a list of thumbnails matching the space-delimited search text string provided. 
