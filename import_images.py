@@ -31,7 +31,7 @@ class ImportImages:
 
 
 	def run(self, import_dir):
-		image_extensions = ['.jpg', '.jpeg', '.png']
+		image_extensions = ['.jpg', '.jpeg', '.png', '.gif']
 
 		for root, dirs, files in os.walk(import_dir):
 			for file in files:
@@ -41,16 +41,23 @@ class ImportImages:
 					# Get the file names and details
 					image_file_extension = self.get_image_file_extension(file)
 					raw_input_file = os.path.join(root, file)
+
+					# Get the output file names, note all files are converted to PNG
 					md5_file = self.calculate_md5(os.path.join(root,file))
-					thumbnail_file = self.static_thumbnail_folder + '/' + md5_file + '.' + image_file_extension
-					output_file = self.static_image_folder + '/' + md5_file + '.' + image_file_extension
+					thumbnail_file = self.static_thumbnail_folder + '/' + md5_file + '.png'
+					output_file = self.static_image_folder + '/' + md5_file + '.png'
 
 					# The URI differs from the file path in that it is "/static/img/blah" and not "/app/static/img..."
-					thumbnail_uri = self.static_thumbnail_uri + '/' + md5_file + '.' + image_file_extension
-					output_uri = self.static_image_uri + '/' + md5_file + '.' + image_file_extension
+					thumbnail_uri = self.static_thumbnail_uri + '/' + md5_file + '.png'
+					output_uri = self.static_image_uri + '/' + md5_file + '.png'
+
+					if image_file_extension != 'png':
+						self.convert_image_to_png(raw_input_file, output_file)
+					else:
+						output_file = raw_input_file
 
 					# Rotate the final printing images to fit portrait mode
-					self.rotate_image(raw_input_file, output_file)
+					self.rotate_image(output_file, output_file)
 
 					# Scale the main printing image to a common max height
 					image_size = self.create_scaled_image(output_file, output_file, self.image_height)
@@ -143,6 +150,11 @@ class ImportImages:
 			for chunk in iter(lambda: file.read(4096), b""):
 				md5_hash.update(chunk)
 		return md5_hash.hexdigest()
+
+	def convert_image_to_png(self, input_path, output_path):
+		with Image.open(input_path) as img:
+			img = img.convert('RGBA')
+			img.save(output_path, format='PNG')
 
 	def rotate_image(self, input_path, output_path):
 		with Image.open(input_path) as img:

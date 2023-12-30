@@ -27,7 +27,7 @@ def print_image():
 @app.route('/printer')
 def printer():
     image_path = request.args.get('image_path')
-    printer = Printer()
+    printer = Printer(True)
     job_id = printer.print_image(image_path)
     print(f"Printing Job Id: {job_id}:")
     return redirect(url_for('index'))

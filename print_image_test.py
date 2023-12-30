@@ -5,7 +5,10 @@ import os
 # Create a connection to the CUPS server
 conn = cups.Connection()
 
-image_path = '/home/brennash/Software/ColouringPagesPrinter/imgs/peppa_pig_teddy_1.jpeg'
+#image_path = '/home/brennash/Software/ColouringPagesPrinter/app/static/img/pages/344c52f5003a883c87d69a072763bf13.jpeg'
+image_path = '/home/brennash/Software/ColouringPagesPrinter/imgs/peppa_pig_fairy_2.jpeg'
+
+
 image_path_bytes = image_path.encode('utf-8')
 
 # Get a list of available printers
@@ -41,4 +44,4 @@ job_id_bytes = str(job_id).encode('utf-8')
 
 with open(image_path, 'rb') as image_file:
 	conn.printFile(printer_name_bytes, image_path_bytes, job_id_bytes, options={})
-conn.closeJob(job_id)
+#conn.closeJob(job_id)
