@@ -1,5 +1,6 @@
 from PIL import Image
 import random
+import time
 import cups
 import os
 
@@ -9,6 +10,7 @@ class Printer:
 		self.verbose = verbose_flag
 
 	def print_image(self, image_path):
+		job_id = None
 		try:
 			conn = cups.Connection()
 			image_path_bytes = image_path.encode('utf-8')
@@ -39,11 +41,22 @@ class Printer:
 				print(f"ERROR - cannot find file to print {abs_path}")
 
 			with open(abs_path, 'rb') as image_file:
-				conn.printFile(printer_name_bytes, abs_path_bytes, job_id_bytes, options={})
-			conn.closeJob(job_id)
+				conn.printFile(printer_name_bytes, abs_path_bytes, job_id, options={})
+			time.sleep(5)
 			return "Printing..."
 		except Exception as err:
+			print(f"Error printing image {err}")
 			return str(err)
+		finally:
+			job = conn.getJobAttributes(job_id)
+			print(job)
+			print(job['job-state'])
+			if job['job-state'] == 9:
+				print("Job Completed")
+				conn.cancelJob("printer_name", job_id)
+			else:
+				print("Job is still in progress.")
+				conn.cancelJob(job_id)
 
 	def get_random_id(self):
 		min = 0
