@@ -87,7 +87,7 @@
                     <tr>
                         {% for thumbnail in chunk %}
                           <td class="center-align">
-                            <a href="{{ url_for('print_image', image_path=thumbnail.get_thumbnail_path()) }}">
+                            <a href="{{ url_for('print_image', img_hash=thumbnail.get_md5_hash()) }}">
                               <img src="{{ thumbnail.get_thumbnail_path() }}" height="200" align="middle" class="class="responsive-img p-4">
                             </a>
                           </td>

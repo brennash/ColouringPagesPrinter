@@ -5,6 +5,9 @@ class Thumbnail:
 		self.file_path = None
 		self.thumbnail_path = None
 
+	def get_md5_hash(self):
+		return self.md5_key
+
 	def set_file_path(self, file_path):
 		self.file_path = file_path
 
