@@ -38,14 +38,19 @@ def upload_image():
         return render_template('upload_image.html')
     elif request.method == 'POST':
         print("POST!!!")
-
+        print(request.files)
 #        for i in request.args.keys():
 #            print(i)
 
         if 'file' not in request.files:
             error_message = "File not in request.files"
             return render_template('error.html', error_message=error_message)
+
         file = request.files['file']
+        filepath = request.files['file-path']
+        print(f"FILE: {file}")
+        print(f"FILE-PATH: {file-path}")
+
         if file.filename == '':
             error_message = "Empty Filename"
             return render_template('error.html', error_message=error_message)
