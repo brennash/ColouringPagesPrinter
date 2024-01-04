@@ -9,7 +9,7 @@ from flask import redirect, url_for
 from flask import Flask, request, Response, jsonify
 
 database = Database()
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = 'app/static/img/pages/'
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 
 @app.route('/')
@@ -32,20 +32,26 @@ def printer():
     print(f"Printing Job Id: {job_id}:")
     return redirect(url_for('index'))
 
-@app.route('/upload_image')
+@app.route('/upload_image', methods=['GET', 'POST'])
 def upload_image():
-    return render_template('upload_image.html')
+    if request.method == 'GET':
+        return render_template('upload_image.html')
+    elif request.method == 'POST':
+        print("POST!!!")
 
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    if 'file' not in request.files:
-        return redirect(request.url)
-    file = request.files['file']
-    if file.filename == '':
-        return redirect(request.url)
-    if file and allowed_file(file.filename):
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
-    return redirect(url_for('index'))
+#        for i in request.args.keys():
+#            print(i)
+
+        if 'file' not in request.files:
+            error_message = "File not in request.files"
+            return render_template('error.html', error_message=error_message)
+        file = request.files['file']
+        if file.filename == '':
+            error_message = "Empty Filename"
+            return render_template('error.html', error_message=error_message)
+        if file and allowed_file(file.filename):
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+            return redirect(url_for('index'))
 
 @app.route('/search', methods=['GET','POST'])
 def search_image():
