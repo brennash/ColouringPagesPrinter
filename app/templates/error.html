@@ -32,6 +32,13 @@
   <body>    
     <div class="container">
 
+      <!-- Floating Green "Upload" Button --->
+      <div class="fixed-action-btn" data-position="left" data-tooltip="Upload Image">
+        <a href="{{ url_for('upload_image') }}" class="btn-floating btn-large green">
+          <i class="large material-icons">upload</i>
+        </a>
+      </div>
+
       <div class="row" align="middle">
         &nbsp;<br>
         &nbsp;<br>
@@ -50,37 +57,9 @@
 
       <div class="row" align="middle">
         &nbsp;<br>
+        <h1>Error: {{error_message}} </h1>
       </div>     
 
-      <!--- The right hand menu --->
-      <div class="row" align="middle">
-
-        <form class="col s10" action="/upload_image" method="post" enctype="multipart/form-data" name="upload_form" id="upload_form">
-          <!-- File Type Button -->
-          <div class="file-field input-field col s10 offset-s3">
-
-            <div class="btn waves-effect waves-light">
-              <i class="material-icons middle">add_circle_outline</i>
-              <input type="file">
-            </div>
-
-            <div class="file-path-wrapper">
-              <input class="file-path validate" type="text" placeholder="Upload a file">
-            </div>
-          
-          </div>
-
-          <div class="input-field col s1">
-            <button class="btn green waves-effect waves-light" type="submit" name="upload">
-              <i class="material-icons middle">file_upload</i>
-            </button>
-          </div>
-
-
-        </form>
-      </div>
     </div>
-
-</body>
-
+  </body>
 </html>
