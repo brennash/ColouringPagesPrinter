@@ -53,32 +53,30 @@
       </div>     
 
       <!--- The right hand menu --->
-      <div class="row" align="middle">
+      <form action="/upload_image" method="post" enctype="multipart/form-data" name="upload_form" id="upload_form">
 
-        <form class="col s10" action="/upload_image" method="post" enctype="multipart/form-data" name="upload_form" id="upload_form">
-          <!-- File Type Button -->
-          <div class="file-field input-field col s10 offset-s3">
-
-            <div class="btn waves-effect waves-light">
-              <i class="material-icons middle">add_circle_outline</i>
-              <input type="file" name=="file" accept="image/*">
+        <div class="row" align="middle">
+          <div class="file-field input-field col s10 offset-s2">
+            <div>
+              <input class="file-path validate" id="file-path" name="file-path" type="text" placeholder="Upload file..">
             </div>
-
-            <div class="file-path-wrapper">
-              <input class="file-path validate" name="file-path" type="text" placeholder="Upload a file">
+        
+            <div class="btn waves-effect waves-light btn-small col s3 ">
+              <i class="material-icons middle right">add_circle_outline</i>Select File
+              <input type="file" name="file" id="file" accept="image/*">
             </div>
-          
           </div>
+        </div>
 
-          <div class="input-field col s1">
-            <button class="btn green waves-effect waves-light" type="submit" value="Upload">
-              <i class="material-icons middle">file_upload</i>
+        <div class="row" align="left">
+          <div class="input-field col s10 offset-s2">
+            <button class="btn green waves-effect waves-light btn-small col s3" type="submit" value="Upload">
+              <i class="material-icons middle right">file_upload</i>Upload
             </button>
           </div>
+        </div>
 
-
-        </form>
-      </div>
+      </form>
     </div>
 
 </body>
