@@ -37,19 +37,15 @@ def upload_image():
     if request.method == 'GET':
         return render_template('upload_image.html')
     elif request.method == 'POST':
-        print("POST!!!")
-        print(request.files)
-#        for i in request.args.keys():
-#            print(i)
+#        print("POST!!!")
+#        print(request.files)
+#        regular_dict = dict(request.files)
+#        keys_method_2 = regular_dict.keys()
+#        print(f"Keys: {keys_method_2}")
 
-        if 'file' not in request.files:
-            error_message = "File not in request.files"
-            return render_template('error.html', error_message=error_message)
-
-        file = request.files['file']
-        filepath = request.files['file-path']
-        print(f"FILE: {file}")
-        print(f"FILE-PATH: {file-path}")
+        file = request.files.get('file')
+        filename = file.filename
+        content_type = file.content_type
 
         if file.filename == '':
             error_message = "Empty Filename"
@@ -82,3 +78,6 @@ def autocomplete():
     results = database.get_autocomplete(search)
     print("RESULTS", results)
     return results
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
